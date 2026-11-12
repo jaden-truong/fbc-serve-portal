@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme: dark;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FBC Vidor • Serving Opportunity Finder</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fbf9f5',
+              100: '#f5f0e6',
+              200: '#eae0cc',
+              300: '#dccaa9',
+              400: '#cbb082',
+              500: '#b7b2a3',
+              600: '#9e9784',
+              700: '#827b69',
+              800: '#696354',
+              900: '#544f44',
+              950: '#2d2a23',
+            },
+            gold: {
+              400: '#e2c07d',
+              500: '#d4af37',
+              600: '#b59224',
+            }
+          },
+          boxShadow: {
+            'glow': '0 0 25px -5px rgba(212, 175, 55, 0.25)',
+            'card': '0 10px 30px -10px rgba(0, 0, 0, 0.85)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #070709; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    
+    body {
+      background-color: #070709;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.12), transparent),
+        radial-gradient(circle at 85% 30%, rgba(183, 178, 163, 0.05), transparent 40%);
+      background-attachment: fixed;
+    }
+
+    .glass-nav {
+      background: rgba(9, 9, 11, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .glass-panel {
+      background: linear-gradient(145deg, rgba(24, 24, 27, 0.85), rgba(15, 15, 18, 0.92));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .hero-mesh {
+      background: 
+        radial-gradient(circle at 100% 0%, rgba(212, 175, 55, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 0% 100%, rgba(183, 178, 163, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #121215 0%, #09090b 100%);
+    }
+    
+    .modal-enter { animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .card-hover {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 175, 55, 0.45);
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.9), 0 0 20px -5px rgba(212, 175, 55, 0.15);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #e2c07d 0%, #c8a252 100%);
+      color: #09090b;
+      transition: all 0.2s ease;
+    }
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #edd095 0%, #d4af37 100%);
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="text-zinc-300 font-sans antialiased min-h-screen flex flex-col selection:bg-gold-400 selection:text-black">
+
+  <header class="sticky top-0 z-40 glass-nav border-b border-white/[0.08] shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-18 py-3">
+        <div class="flex items-center gap-3.5">
+          <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-tr from-gold-500 to-brand-300 rounded-full opacity-60 blur-sm group-hover:opacity-90 transition duration-300"></div>
+            <svg viewBox="0 0 100 100" class="relative w-10 h-10 rounded-full shadow-md bg-gradient-to-br from-brand-400 to-brand-600" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="14.5" fill="#ffffff" />
+              <g fill="#ffffff">
+                <circle cx="50" cy="21" r="7.5" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(51.43 50 50)" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(102.86 50 50)" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(154.29 50 50)" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(205.71 50 50)" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(257.14 50 50)" />
+                <circle cx="50" cy="21" r="7.5" transform="rotate(308.57 50 50)" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-lg leading-tight text-white tracking-tight">FBC Vidor</h1>
+            <p class="text-[11px] text-gold-400 font-semibold tracking-widest uppercase select-none cursor-default">Serve Portal</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <button id="memberViewToggleBtn" onclick="toggleMemberView()" class="hidden items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-100 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all border border-white/10 hover:border-white/20">
+            <i data-lucide="eye" class="w-4 h-4 text-gold-400"></i>
+            <span id="memberViewToggleText">Member View</span>
+          </button>
+
+          <button id="adminNotifBtn" onclick="openGlobalNotifications()" class="hidden relative items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-100 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all border border-white/10 hover:border-white/20">
+            <i data-lucide="bell" class="w-4 h-4 text-gold-400"></i>
+            <span class="hidden sm:inline">Notifications</span>
+            <span id="globalNotifBadge" class="absolute -top-1.5 -right-1.5 bg-gold-400 text-black text-xs font-extrabold px-1.5 py-0.5 rounded-full shadow-md hidden">0</span>
+          </button>
+          
+          <button id="adminAddBtn" onclick="openAddModal()" class="hidden items-center gap-2 btn-gold px-4 py-2 rounded-xl text-sm font-bold shadow-md">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Add Opportunity</span>
+          </button>
+
+          <button id="adminLoginNavBtn" onclick="openAuth()" class="inline-flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-100 px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-white/10 hover:border-gold-400/40 shadow-sm">
+            <i data-lucide="lock" class="w-4 h-4 text-gold-400"></i>
+            <span>Admin Login</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Hero Banner -->
+    <div id="heroSection" class="rounded-3xl shadow-card border border-white/10 mb-8 relative overflow-hidden bg-cover bg-center transition-all duration-500">
+      <div id="heroOverlay" class="absolute inset-0 hero-mesh transition-all duration-500 z-0"></div>
+      
+      <!-- Decorative Watermark -->
+      <div class="absolute -bottom-12 -right-12 text-gold-400/[0.06] pointer-events-none z-0">
+        <i data-lucide="heart-handshake" class="w-[26rem] h-[26rem]"></i>
+      </div>
+
+      <button id="adminHeroBtn" onclick="document.getElementById('heroPhotoUpload').click()" class="hidden absolute top-5 right-5 z-20 items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-white/15 backdrop-blur-md shadow-lg">
+        <i data-lucide="camera" class="w-4 h-4 text-gold-400"></i>
+        <span id="adminHeroBtnText">Change Cover</span>
+      </button>
+      <input type="file" id="heroPhotoUpload" accept="image/*" class="hidden" onchange="handleHeroPhotoChange(event)">
+
+      <div class="relative z-10 max-w-3xl p-7 sm:p-10">
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-white mb-4 tracking-tight leading-[1.15]">
+          Discover Your Next Step in Ministry
+        </h2>
+        <p class="text-zinc-300/90 text-base sm:text-lg mb-8 leading-relaxed max-w-2xl">
+          Serving the body of Christ is essential to being a growing disciple. We have all been given different gifts for the purpose of building up the church. Explore our live opportunities below and find where your gifts align with our mission.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 shadow-inner flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Total Roles</div>
+              <div class="font-display text-3xl font-extrabold text-white" id="statTotal">0</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gold-400">
+              <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 shadow-inner flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Primary Teams</div>
+              <div class="font-display text-3xl font-extrabold text-white" id="statBm1">0</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-brand-300">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 shadow-inner flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Event Shifts</div>
+              <div class="font-display text-3xl font-extrabold text-white" id="statBm2">0</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400">
+              <i data-lucide="calendar-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="glass-panel rounded-2xl shadow-card border border-white/10 p-5 sm:p-6 mb-8 relative z-20">
+      <div class="flex flex-col md:flex-row gap-3.5 mb-5">
+        <div class="flex-grow relative">
+          <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500"></i>
+          <input type="text" id="searchInput" placeholder="Search roles by keyword, ministry, skills..." class="w-full pl-11 pr-4 py-3 bg-black/80 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 transition-all text-sm text-white placeholder:text-zinc-500" oninput="handleFilterChange()">
+        </div>
+        <button onclick="resetFilters()" class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-zinc-200 bg-zinc-800/90 hover:bg-zinc-700 border border-white/10 rounded-xl transition-all shrink-0">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-gold-400"></i>
+          Reset Filters
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Ministry Multi-Select Dropdown -->
+        <div class="relative filter-dropdown-wrapper">
+          <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Ministry</label>
+          <button type="button" onclick="toggleFilterMenu('menuMinistry')" class="w-full p-3 bg-black/80 border border-white/10 hover:border-white/20 rounded-xl text-sm text-zinc-200 focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 flex justify-between items-center text-left transition-colors">
+            <span id="labelMinistry" class="truncate">All Ministries</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 ml-2"></i>
+          </button>
+          <div id="menuMinistry" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-zinc-900 border border-white/15 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="preschool" data-label="Nursery & Preschool" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Nursery & Preschool</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="children" data-label="Children's Ministry" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Children's Ministry</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="youth" data-label="Youth & Students" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Youth & Students</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="impressions" data-label="First Impressions" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>First Impressions</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="worship" data-label="Worship & Tech" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Worship & Tech</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="kitchen" data-label="Kitchen & Fellowship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Kitchen & Fellowship</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="impact" data-label="Community Impact" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Community Impact</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="prayer" data-label="Prayer & Discipleship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Prayer & Discipleship</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="pew" data-label="Pew Partners" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Pew Partners</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Classification Multi-Select Dropdown -->
+        <div class="relative filter-dropdown-wrapper">
+          <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Classification</label>
+          <button type="button" onclick="toggleFilterMenu('menuBenchmark')" class="w-full p-3 bg-black/80 border border-white/10 hover:border-white/20 rounded-xl text-sm text-zinc-200 focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 flex justify-between items-center text-left transition-colors">
+            <span id="labelBenchmark" class="truncate">All Classifications</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 ml-2"></i>
+          </button>
+          <div id="menuBenchmark" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-zinc-900 border border-white/15 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="bm1" data-label="Primary Team" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Primary Team</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="bm2" data-label="Event Shift" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Event Shift</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Spiritual Gift Multi-Select Dropdown -->
+        <div class="relative filter-dropdown-wrapper">
+          <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Spiritual Gift</label>
+          <button type="button" onclick="toggleFilterMenu('menuGift')" class="w-full p-3 bg-black/80 border border-white/10 hover:border-white/20 rounded-xl text-sm text-zinc-200 focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 flex justify-between items-center text-left transition-colors">
+            <span id="labelGift" class="truncate">All Gifts</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 ml-2"></i>
+          </button>
+          <div id="menuGift" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-zinc-900 border border-white/15 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Leadership" data-label="Leadership" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Leadership</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Administration" data-label="Administration" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Administration</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Teaching" data-label="Teaching" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Teaching</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Knowledge" data-label="Knowledge" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Knowledge</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Wisdom" data-label="Wisdom" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Wisdom</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Prophecy" data-label="Prophecy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Prophecy</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Discernment" data-label="Discernment" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Discernment</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Exhortation" data-label="Exhortation" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Exhortation</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Shepherding" data-label="Shepherding" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Shepherding</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Faith" data-label="Faith" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Faith</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Evangelism" data-label="Evangelism" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Evangelism</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Apostleship" data-label="Apostleship" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Apostleship</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Service/Helps" data-label="Service/Helps" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Service/Helps</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Mercy" data-label="Mercy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Mercy</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Giving" data-label="Giving" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Giving</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="Hospitality" data-label="Hospitality" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Hospitality</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Schedule Multi-Select Dropdown -->
+        <div class="relative filter-dropdown-wrapper">
+          <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Schedule</label>
+          <button type="button" onclick="toggleFilterMenu('menuSchedule')" class="w-full p-3 bg-black/80 border border-white/10 hover:border-white/20 rounded-xl text-sm text-zinc-200 focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 flex justify-between items-center text-left transition-colors">
+            <span id="labelSchedule" class="truncate">All Schedules</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 ml-2"></i>
+          </button>
+          <div id="menuSchedule" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-zinc-900 border border-white/15 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="sun-morning" data-label="Sunday Mornings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Sunday Mornings</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="sun-lg" data-label="Sunday LIFE Group" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Sunday LIFE Group</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="wed-nite" data-label="Wednesday Evenings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Wednesday Evenings</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/5 text-sm text-zinc-200 cursor-pointer transition-colors">
+              <input type="checkbox" value="flexible" data-label="Flexible / Seasonal" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule accent-amber-400 rounded bg-black border-zinc-700">
+              <span>Flexible / Seasonal</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mb-5 flex items-center justify-between text-sm text-zinc-400 px-1">
+      <div id="resultsCount">Loading opportunities...</div>
+    </div>
+
+    <div id="opportunitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/[0.06] py-6 mt-12 text-center text-xs text-zinc-500">
+    <p>First Baptist Church Vidor • Worship God, Grow in Christ, Serve Others, Impact the World</p>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center">
+      <div class="inline-block w-full max-w-sm bg-zinc-900 rounded-2xl text-left shadow-2xl border border-white/10 modal-enter my-8 p-6">
+        <div class="flex justify-between items-center mb-5">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gold-400/10 border border-gold-400/20 flex items-center justify-center text-gold-400">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+            </div>
+            <h3 class="font-display text-lg font-bold text-white">Admin Access</h3>
+          </div>
+          <button type="button" onclick="closeAuth()" class="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-lg hover:bg-white/5">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Email</label>
+            <input type="text" id="authN" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400" placeholder="e.g. jane@email.com">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">PIN (4 Digits)</label>
+            <input type="password" id="authP" required maxlength="4" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 tracking-widest" placeholder="••••">
+          </div>
+          <button type="submit" id="authSubmitBtn" class="w-full py-3 mt-2 text-sm font-bold btn-gold rounded-xl flex items-center justify-center gap-2">
+            <span>Authenticate</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interested Modal -->
+  <div id="interestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center">
+      <div class="inline-block w-full max-w-md bg-zinc-900 rounded-2xl text-left shadow-2xl border border-white/10 modal-enter my-8 p-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="heart" class="w-5 h-5 text-gold-400"></i>
+            I'm Interested
+          </h3>
+          <button type="button" onclick="closeInterestModal()" class="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-lg hover:bg-white/5">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <p class="text-sm text-zinc-400 mb-5" id="interestModalTitle">Sign up to let our team know you'd like to serve in this role.</p>
+        <form id="interestForm" onsubmit="handleInterestSubmit(event)" class="space-y-4">
+          <input type="hidden" id="interestOppId">
+          <input type="hidden" id="interestOppTitle">
+          <input type="hidden" id="interestOppCreator">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Your Name *</label>
+            <input type="text" id="userName" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400" placeholder="e.g. Jane Smith">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Phone Number *</label>
+            <input type="tel" id="userPhone" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400" placeholder="e.g. 409-555-0199">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Email Address *</label>
+            <input type="email" id="userEmail" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400" placeholder="e.g. jane@example.com">
+          </div>
+          <button type="submit" id="interestSubmitBtn" class="w-full py-3 mt-2 text-sm font-bold btn-gold rounded-xl flex items-center justify-center gap-2">
+            <span>Submit Interest</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin View Interested List Modal -->
+  <div id="viewInterestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center">
+      <div class="inline-block w-full max-w-lg bg-zinc-900 rounded-2xl text-left shadow-2xl border border-white/10 modal-enter my-8 p-6">
+        <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
+          <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="users" class="w-5 h-5 text-gold-400"></i>
+            <span id="viewInterestHeader">Interested Members</span>
+          </h3>
+          <button type="button" onclick="closeViewInterestModal()" class="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-lg hover:bg-white/5">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div id="interestListContainer" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Notifications Modal -->
+  <div id="globalNotifModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center">
+      <div class="inline-block w-full max-w-2xl bg-zinc-900 rounded-2xl text-left shadow-2xl border border-white/10 modal-enter my-8 p-6">
+        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+          <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="bell" class="w-5 h-5 text-gold-400"></i>
+            Website Sign-ups
+          </h3>
+          <button type="button" onclick="closeGlobalNotifications()" class="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-lg hover:bg-white/5">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <p class="text-xs text-zinc-400 mb-4">Inquiries for your roles, ordered from newest to oldest:</p>
+        <div id="globalNotifContainer" class="space-y-3 max-h-[450px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Opportunity Modal -->
+  <div id="addModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div class="min-h-screen px-4 text-center flex items-center justify-center">
+      <div class="inline-block w-full max-w-2xl bg-zinc-900 border border-white/10 rounded-2xl text-left shadow-2xl modal-enter my-8">
+        
+        <div class="flex justify-between items-center p-6 border-b border-white/10">
+          <h3 class="font-display text-xl font-bold text-white flex items-center gap-2">
+            <i data-lucide="plus-circle" id="modalTitleIcon" class="w-5 h-5 text-gold-400"></i>
+            <span id="modalTitleText">Add New Opportunity</span>
+          </h3>
+          <button type="button" onclick="closeAddModal()" class="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-lg hover:bg-white/5">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <form id="addForm" onsubmit="handleAddSubmit(event)" class="p-6">
+          <div class="space-y-5">
+            
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Card Photo (Optional)</label>
+              <input type="file" id="addPhoto" accept="image/*" class="w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gold-400 file:text-black hover:file:bg-gold-500 focus:outline-none cursor-pointer">
+              <p class="text-xs text-zinc-500 mt-1.5" id="photoHelpText">Image will be automatically resized for fast loading.</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Title *</label>
+              <input type="text" id="addTitle" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. Nursery Caregiver">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Ministry Category *</label>
+                <select id="addMinistry" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
+                  <option value="" disabled selected>Select Ministry...</option>
+                  <option value="preschool">Nursery & Preschool</option>
+                  <option value="children">Children's Ministry</option>
+                  <option value="youth">Youth & Students</option>
+                  <option value="impressions">First Impressions</option>
+                  <option value="worship">Worship & Tech</option>
+                  <option value="kitchen">Kitchen & Fellowship</option>
+                  <option value="impact">Community Impact</option>
+                  <option value="prayer">Prayer & Discipleship</option>
+                  <option value="pew">Pew Partners</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Classification *</label>
+                <select id="addBenchmark" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
+                  <option value="" disabled selected>Select Classification...</option>
+                  <option value="bm1">Primary Team</option>
+                  <option value="bm2">Event Shift</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Schedule Category *</label>
+                <select id="addScheduleCat" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
+                  <option value="" disabled selected>Select Schedule...</option>
+                  <option value="sun-morning">Sunday Mornings</option>
+                  <option value="sun-lg">Sunday LIFE Group</option>
+                  <option value="wed-nite">Wednesday Evenings</option>
+                  <option value="flexible">Flexible / Seasonal</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Location *</label>
+                <input type="text" id="addLocation" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. 1st Floor Colonnade">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Specific Schedule Text *</label>
+                <input type="text" id="addScheduleText" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. Sundays @ 8:30 AM or 11:00 AM • 1.5 hrs/shift">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Supervisor(s) *</label>
+                <input type="text" id="addSupervisor" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. Misty Clark & Holli Ann Gallimore">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Summary *</label>
+              <textarea id="addSummary" required rows="2" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="Brief description of the role..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Key Duties (One per line) *</label>
+                <textarea id="addDuties" required rows="3" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="- Check in babies&#10;- Provide gentle care..."></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Prerequisites (One per line)</label>
+                <textarea id="addPrereqs" rows="3" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="- Background Check&#10;- Starting Point Class..."></textarea>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Required / Suggested Spiritual Gifts</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 bg-black/40 p-3.5 rounded-xl border border-white/5">
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Leadership" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Leadership</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Administration" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Administration</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Teaching" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Teaching</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Knowledge" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Knowledge</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Wisdom" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Wisdom</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Prophecy" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Prophecy</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Discernment" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Discernment</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Exhortation" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Exhortation</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Shepherding" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Shepherding</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Faith" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Faith</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Evangelism" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Evangelism</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Apostleship" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Apostleship</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Service/Helps" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Service/Helps</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Mercy" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Mercy</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Giving" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Giving</label>
+                <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer"><input type="checkbox" value="Hospitality" class="gift-cb accent-amber-400 rounded bg-black border-zinc-700"> Hospitality</label>
+              </div>
+            </div>
+
+            <div class="sm:col-span-2 pt-4 border-t border-white/10">
+              <h4 class="font-display text-sm font-bold text-white mb-3">Contact Person & Needs</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Contact Name *</label>
+                    <input type="text" id="addContactName" required class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. John Doe">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Contact Phone</label>
+                    <input type="tel" id="addContactPhone" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. 409-555-0123">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Contact Email</label>
+                    <input type="email" id="addContactEmail" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. john@example.com">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Remaining Need (Number) *</label>
+                    <input type="number" id="addRemainingNeed" required min="0" class="w-full p-3 bg-black/80 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 placeholder:text-zinc-600" placeholder="e.g. 3">
+                  </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 text-sm font-semibold text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors">Cancel</button>
+            <button type="submit" id="addSubmitBtn" class="px-6 py-2.5 text-sm font-bold btn-gold rounded-xl flex items-center gap-2">
+              <span id="addSubmitText">Save Opportunity</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1xYPCXX8KEvMLYuytbfFF8dZQysb4J3o",
+      authDomain: "fbc-vidor-serve-portal.firebaseapp.com",
+      projectId: "fbc-vidor-serve-portal",
+      storageBucket: "fbc-vidor-serve-portal.firebasestorage.app",
+      messagingSenderId: "627442474060",
+      appId: "1:627442474060:web:61ba7246c73bb15a46a8e9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let rawOpportunities = [];
+    let allInterests = [];
+    let loggedInAdmin = null; 
+    let isMemberView = false; 
+    let editingId = null;
+
+    const MINISTRIES = {
+      "preschool": "Nursery & Preschool",
+      "children": "Children's Ministry",
+      "youth": "Youth & Students",
+      "impressions": "First Impressions",
+      "worship": "Worship & Tech",
+      "kitchen": "Kitchen & Fellowship",
+      "impact": "Community Impact",
+      "prayer": "Prayer & Discipleship",
+      "pew": "Pew Partners"
+    };
+
+    const BENCHMARKS = {
+      "bm1": "Primary Team",
+      "bm2": "Event Shift"
+    };
+
+    const DEFAULT_FILTER_LABELS = {
+      Ministry: "All Ministries",
+      Benchmark: "All Classifications",
+      Gift: "All Gifts",
+      Schedule: "All Schedules"
+    };
+
+    window.toggleFilterMenu = (menuId) => {
+      const targetMenu = document.getElementById(menuId);
+      const isHidden = targetMenu.classList.contains('hidden');
+      document.querySelectorAll('.filter-dropdown-menu').forEach(m => m.classList.add('hidden'));
+      if (isHidden) {
+        targetMenu.classList.remove('hidden');
+      }
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.filter-dropdown-wrapper')) {
+        document.querySelectorAll('.filter-dropdown-menu').forEach(m => m.classList.add('hidden'));
+      }
+    });
+
+    window.handleMultiSelectChange = (category) => {
+      const checkedBoxes = Array.from(document.querySelectorAll(`.filter-cb-${category}:checked`));
+      const labelEl = document.getElementById(`label${category}`);
+      if (checkedBoxes.length === 0) {
+        labelEl.textContent = DEFAULT_FILTER_LABELS[category];
+      } else if (checkedBoxes.length === 1) {
+        labelEl.textContent = checkedBoxes[0].dataset.label;
+      } else {
+        labelEl.textContent = `${checkedBoxes.length} selected`;
+      }
+      window.renderUI();
+    };
+
+    async function initApp() {
+      try {
+        await signInAnonymously(auth);
+        setupRealtimeListener();
+      } catch (error) {
+        console.error("Firebase Auth Failed:", error);
+        window.showToast("Database blocked. Please check Firebase Rules.", "error");
+      }
+    }
+
+    function setupRealtimeListener() {
+      const oppsRef = collection(db, 'opportunities');
+      onSnapshot(oppsRef, (snapshot) => {
+        rawOpportunities = [];
+        snapshot.forEach((d) => {
+          rawOpportunities.push({ id: d.id, ...d.data() });
+        });
+        rawOpportunities.sort((a, b) => a.title.localeCompare(b.title));
+        window.renderUI();
+      }, (error) => {
+        console.error("Fetch error:", error);
+        window.showToast("Failed to load opportunities from database.", "error");
+      });
+
+      const interestRef = collection(db, 'interests');
+      onSnapshot(interestRef, (snapshot) => {
+        allInterests = [];
+        snapshot.forEach((d) => {
+          allInterests.push({ id: d.id, ...d.data() });
+        });
+        allInterests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        window.updateGlobalNotificationBadge();
+        if(loggedInAdmin && !isMemberView) window.renderUI();
+      }, (error) => {
+        console.error("Interest fetch error:", error);
+      });
+
+      onSnapshot(doc(db, 'settings', 'heroConfig'), (docSnap) => {
+        const overlay = document.getElementById('heroOverlay');
+        if (docSnap.exists() && docSnap.data().photoData) {
+          document.getElementById('heroSection').style.backgroundImage = `url(${docSnap.data().photoData})`;
+          overlay.className = 'absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/55 transition-all duration-500 z-0';
+        } else {
+          document.getElementById('heroSection').style.backgroundImage = 'none';
+          overlay.className = 'absolute inset-0 hero-mesh transition-all duration-500 z-0';
+        }
+      });
+    }
+
+    window.updateGlobalNotificationBadge = () => {
+      const badge = document.getElementById('globalNotifBadge');
+      const relevantInterests = getRelevantInterests();
+      if (relevantInterests.length > 0) {
+        badge.innerText = relevantInterests.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    };
+
+    function getRelevantInterests() {
+      if (!loggedInAdmin) return [];
+      if (loggedInAdmin.level === 'super') return allInterests;
+      const myOppIds = rawOpportunities.filter(o => o.createdBy === loggedInAdmin.name).map(o => o.id);
+      return allInterests.filter(i => myOppIds.includes(i.oppId));
+    }
+
+    const processImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.7) => {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve(null);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height *= maxWidth / width;
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width *= maxHeight / height;
+                height = maxHeight;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = (e) => reject(e);
+        };
+        reader.onerror = (e) => reject(e);
+      });
+    };
+
+    window.openAuth = () => {
+      if(loggedInAdmin) return window.showToast(`Logged in as ${loggedInAdmin.name}`, "info");
+      document.getElementById('authForm').reset();
+      document.getElementById('authModal').classList.remove('hidden');
+    };
+
+    window.closeAuth = () => {
+      document.getElementById('authModal').classList.add('hidden');
+    };
+    
+    window.handleAuthSubmit = async (e) => {
+      e.preventDefault();
+      const n = document.getElementById('authN').value.trim();
+      const p = document.getElementById('authP').value.trim();
+      
+      const btn = document.getElementById('authSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Checking...`;
+      if (window.lucide) window.lucide.createIcons();
+
+      try {
+        const q = query(collection(db, 'admins'), where('name', '==', n), where('pin', '==', p));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const adminDoc = querySnapshot.docs[0].data();
+          loggedInAdmin = { 
+            name: adminDoc.name, 
+            level: adminDoc.level || 'director',
+            email: adminDoc.email || '' 
+          };
+          
+          document.getElementById('adminAddBtn').classList.remove('hidden');
+          document.getElementById('adminAddBtn').classList.add('inline-flex');
+          if (loggedInAdmin.level === 'super') {
+            document.getElementById('adminHeroBtn').classList.remove('hidden');
+            document.getElementById('adminHeroBtn').classList.add('inline-flex');
+          }
+          document.getElementById('adminNotifBtn').classList.remove('hidden');
+          document.getElementById('adminNotifBtn').classList.add('inline-flex');
+          document.getElementById('memberViewToggleBtn').classList.remove('hidden');
+          document.getElementById('memberViewToggleBtn').classList.add('inline-flex');
+          document.getElementById('adminLoginNavBtn').classList.add('hidden');
+
+          window.showToast(`Welcome back, ${loggedInAdmin.name} (${loggedInAdmin.level} admin)`, "success");
+          window.closeAuth();
+          window.updateGlobalNotificationBadge();
+          window.renderUI();
+        } else {
+          window.showToast("Invalid credentials.", "error");
+        }
+      } catch (error) {
+        console.error("Auth query error:", error);
+        window.showToast("Authentication failed. Check connection or Firestore rules.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Authenticate</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    };
+
+    window.toggleMemberView = () => {
+      isMemberView = !isMemberView;
+      const toggleText = document.getElementById('memberViewToggleText');
+      if (isMemberView) {
+        toggleText.innerText = "Admin View";
+        window.showToast("Switched to Member View preview.", "info");
+      } else {
+        toggleText.innerText = "Member View";
+        window.showToast("Switched back to Admin View.", "info");
+      }
+      window.renderUI();
+    };
+
+    window.handleHeroPhotoChange = async (e) => {
+      if (!loggedInAdmin || loggedInAdmin.level !== 'super') {
+        return window.showToast("Only Super Admins can change the cover photo.", "error");
+      }
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const btnText = document.getElementById('adminHeroBtnText');
+      const icon = document.querySelector('#adminHeroBtn i');
+      
+      const originalText = btnText.innerText;
+      btnText.innerText = "Saving...";
+      icon.setAttribute('data-lucide', 'loader-2');
+      icon.classList.add('animate-spin');
+      if (window.lucide) window.lucide.createIcons();
+
+      try {
+        const photoData = await processImage(file, 1920, 1080, 0.8);
+        await setDoc(doc(db, 'settings', 'heroConfig'), { photoData }, { merge: true });
+        window.showToast("Cover photo updated!", "success");
+      } catch (error) {
+        console.error("Hero upload error:", error);
+        window.showToast("Error updating cover photo.", "error");
+      } finally {
+        btnText.innerText = originalText;
+        icon.setAttribute('data-lucide', 'camera');
+        icon.classList.remove('animate-spin');
+        if (window.lucide) window.lucide.createIcons();
+        e.target.value = ''; 
+      }
+    };
+
+    window.openInterestModal = (oppId, oppTitle, oppCreator) => {
+      document.getElementById('interestForm').reset();
+      document.getElementById('interestOppId').value = oppId;
+      document.getElementById('interestOppTitle').value = oppTitle;
+      document.getElementById('interestOppCreator').value = oppCreator || '';
+      document.getElementById('interestModalTitle').innerText = `Sign up for: ${oppTitle}`;
+      document.getElementById('interestModal').classList.remove('hidden');
+    };
+
+    window.closeInterestModal = () => {
+      document.getElementById('interestModal').classList.add('hidden');
+    };
+
+    window.handleInterestSubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('interestSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Submitting...`;
+      if (window.lucide) window.lucide.createIcons();
+
+      try {
+        const oppId = document.getElementById('interestOppId').value;
+        const oppTitle = document.getElementById('interestOppTitle').value;
+        const creator = document.getElementById('interestOppCreator').value;
+        const userName = document.getElementById('userName').value.trim();
+        const userPhone = document.getElementById('userPhone').value.trim();
+        const userEmail = document.getElementById('userEmail').value.trim();
+
+        const data = {
+          oppId: oppId,
+          oppTitle: oppTitle,
+          name: userName,
+          phone: userPhone,
+          email: userEmail,
+          createdAt: new Date().toISOString()
+        };
+
+        await addDoc(collection(db, 'interests'), data);
+
+        window.showToast("Thank you! We've received your interest.", "success");
+        window.closeInterestModal();
+      } catch (error) {
+        console.error("Interest submit error:", error);
+        window.showToast("Error submitting interest. Check database rules.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Submit Interest</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    };
+
+    window.openViewInterestModal = (oppId, oppTitle) => {
+      document.getElementById('viewInterestHeader').innerText = `Interested in: ${oppTitle}`;
+      const container = document.getElementById('interestListContainer');
+      const filtered = allInterests.filter(i => i.oppId === oppId);
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="text-sm text-zinc-500 text-center py-6">No one has signed up for this role yet.</p>`;
+      } else {
+        container.innerHTML = filtered.map(item => `
+          <div class="bg-black/70 p-3.5 rounded-xl border border-white/10 space-y-1.5">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-white text-sm"><i data-lucide="user" class="w-3.5 h-3.5 inline mr-1.5 text-gold-400"></i> ${item.name}</span>
+              <span class="text-xs text-zinc-500">${new Date(item.createdAt).toLocaleDateString()}</span>
+            </div>
+            <div class="text-xs text-zinc-300 flex items-center gap-2 pt-1">
+              <a href="tel:${item.phone}" class="hover:text-gold-400 flex items-center gap-1 transition-colors"><i data-lucide="phone" class="w-3 h-3 text-gold-400"></i> ${item.phone}</a>
+              <span class="text-zinc-600">•</span>
+              <a href="mailto:${item.email}" class="hover:text-gold-400 flex items-center gap-1 transition-colors"><i data-lucide="mail" class="w-3 h-3 text-gold-400"></i> ${item.email}</a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('viewInterestModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.closeViewInterestModal = () => {
+      document.getElementById('viewInterestModal').classList.add('hidden');
+    };
+
+    window.openGlobalNotifications = () => {
+      const container = document.getElementById('globalNotifContainer');
+      const relevantInterests = getRelevantInterests();
+      
+      if (relevantInterests.length === 0) {
+        container.innerHTML = `<p class="text-sm text-zinc-500 text-center py-8">No interest submissions found.</p>`;
+      } else {
+        container.innerHTML = relevantInterests.map(item => `
+          <div class="bg-black/70 p-4 rounded-xl border border-white/10 space-y-2">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-gold-400/10 text-gold-400 border border-gold-400/20 mb-1.5 inline-block">${item.oppTitle}</span>
+                <h4 class="font-bold text-white text-sm"><i data-lucide="user" class="w-3.5 h-3.5 inline mr-1.5 text-gold-400"></i> ${item.name}</h4>
+              </div>
+              <span class="text-xs text-zinc-500">${new Date(item.createdAt).toLocaleString()}</span>
+            </div>
+            <div class="text-xs text-zinc-300 flex items-center gap-3 pt-2 border-t border-white/10">
+              <a href="tel:${item.phone}" class="hover:text-gold-400 flex items-center gap-1 transition-colors"><i data-lucide="phone" class="w-3.5 h-3.5 text-gold-400"></i> ${item.phone}</a>
+              <a href="mailto:${item.email}" class="hover:text-gold-400 flex items-center gap-1 transition-colors"><i data-lucide="mail" class="w-3.5 h-3.5 text-gold-400"></i> ${item.email}</a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('globalNotifModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.closeGlobalNotifications = () => {
+      document.getElementById('globalNotifModal').classList.add('hidden');
+    };
+
+    window.handleFilterChange = () => window.renderUI();
+    
+    window.resetFilters = () => {
+      document.getElementById("searchInput").value = "";
+      ['Ministry', 'Benchmark', 'Gift', 'Schedule'].forEach(cat => {
+        document.querySelectorAll(`.filter-cb-${cat}`).forEach(cb => cb.checked = false);
+        const labelEl = document.getElementById(`label${cat}`);
+        if (labelEl) labelEl.textContent = DEFAULT_FILTER_LABELS[cat];
+      });
+      document.querySelectorAll('.filter-dropdown-menu').forEach(m => m.classList.add('hidden'));
+      window.renderUI();
+    };
+
+    window.renderUI = () => {
+      const searchQ = document.getElementById("searchInput").value.toLowerCase().trim();
+      const selectedMinistries = Array.from(document.querySelectorAll('.filter-cb-Ministry:checked')).map(cb => cb.value);
+      const selectedBenchmarks = Array.from(document.querySelectorAll('.filter-cb-Benchmark:checked')).map(cb => cb.value);
+      const selectedGifts = Array.from(document.querySelectorAll('.filter-cb-Gift:checked')).map(cb => cb.value);
+      const selectedSchedules = Array.from(document.querySelectorAll('.filter-cb-Schedule:checked')).map(cb => cb.value);
+
+      let sourceOpportunities = rawOpportunities;
+      if (loggedInAdmin && !isMemberView && loggedInAdmin.level !== 'super') {
+        sourceOpportunities = rawOpportunities.filter(o => o.createdBy === loggedInAdmin.name);
+      }
+
+      const filtered = sourceOpportunities.filter(opp => {
+        if (selectedMinistries.length > 0 && !selectedMinistries.includes(opp.ministry)) return false;
+        if (selectedBenchmarks.length > 0 && !selectedBenchmarks.includes(opp.benchmark)) return false;
+        if (selectedGifts.length > 0 && !selectedGifts.some(g => (opp.gifts || []).includes(g))) return false;
+        if (selectedSchedules.length > 0 && !selectedSchedules.includes(opp.scheduleCategory)) return false;
+        
+        if (searchQ) {
+          const haystack = [
+            opp.title, opp.ministryName, opp.summary, opp.location, opp.supervisor,
+            ...(opp.duties || []), ...(opp.gifts || []),
+            opp.contactName, opp.contactEmail, opp.contactPhone
+          ].join(" ").toLowerCase();
+          if (!haystack.includes(searchQ)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById("statTotal").textContent = sourceOpportunities.length;
+      document.getElementById("statBm1").textContent = sourceOpportunities.filter(o => o.benchmark === 'bm1').length;
+      document.getElementById("statBm2").textContent = sourceOpportunities.filter(o => o.benchmark === 'bm2').length;
+      
+      document.getElementById("resultsCount").innerHTML = `Showing <span class="font-bold text-white">${filtered.length}</span> of <span class="font-bold text-white">${sourceOpportunities.length}</span> opportunities`;
+
+      const grid = document.getElementById("opportunitiesGrid");
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-20 text-center glass-panel rounded-2xl border border-white/10">
+            <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-zinc-500">
+              <i data-lucide="search-x" class="w-7 h-7"></i>
+            </div>
+            <h3 class="font-display text-lg font-bold text-white mb-1">No opportunities found</h3>
+            <p class="text-zinc-400 text-sm max-w-sm mx-auto">Try adjusting your filters or search terms.</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = filtered.map(opp => {
+          const giftTags = (opp.gifts || []).map(g => `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gold-400/10 text-gold-400 border border-gold-400/20">${g}</span>`).join('');
+          const dutiesHtml = (opp.duties || []).map(d => `<li class="text-xs text-zinc-300 mb-1.5 flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-gold-400 shrink-0 mt-0.5"></i> <span>${d}</span></li>`).join('');
+          
+          const showAdminControls = loggedInAdmin && !isMemberView;
+          const adminControls = showAdminControls ? `
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="openEditModal('${opp.id}')" title="Edit Opportunity" class="text-gold-400 hover:text-gold-300 hover:bg-white/10 p-1.5 rounded-lg transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+              <button onclick="handleDelete('${opp.id}')" title="Delete Opportunity" class="text-rose-400 hover:text-rose-300 hover:bg-white/10 p-1.5 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          ` : '';
+
+          const currentNeed = opp.remainingNeed || 0;
+          const needsColor = currentNeed > 0 ? 'text-emerald-400' : 'text-zinc-500';
+          const needBadgeBg = currentNeed > 0 ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-white/5 border-white/10';
+          const needControls = showAdminControls ? `
+            <div class="flex items-center gap-1 ml-auto">
+              <button onclick="updateNeed('${opp.id}', ${currentNeed}, -1)" class="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-md text-zinc-200 transition-colors">-</button>
+              <button onclick="updateNeed('${opp.id}', ${currentNeed}, 1)" class="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-md text-zinc-200 transition-colors">+</button>
+            </div>
+          ` : '';
+
+          const roleInterests = allInterests.filter(i => i.oppId === opp.id);
+          const interestBtn = showAdminControls ? `
+            <button onclick="openViewInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}')" class="w-full mt-4 flex items-center justify-between bg-zinc-800/90 hover:bg-zinc-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all border border-white/10">
+              <span class="flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5 text-gold-400"></i> Who's Interested?</span>
+              <span class="bg-gold-400 text-black px-2 py-0.5 rounded-full text-[11px] font-extrabold">${roleInterests.length}</span>
+            </button>
+          ` : `
+            <button onclick="openInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}', '${opp.createdBy || ''}')" class="w-full mt-4 flex items-center justify-center gap-2 btn-gold px-4 py-2.5 rounded-xl text-xs font-bold shadow-md">
+              <i data-lucide="heart" class="w-4 h-4"></i>
+              <span>I'm Interested</span>
+            </button>
+          `;
+
+          const hasContact = opp.contactName || opp.contactPhone || opp.contactEmail;
+          const contactHtml = hasContact ? `
+            <h4 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 mt-4">Contact Person</h4>
+            <div class="bg-black/60 p-3 rounded-xl border border-white/10 space-y-2">
+              ${opp.contactName ? `<div class="flex items-center gap-2 text-xs text-zinc-200"><i data-lucide="user-check" class="w-4 h-4 text-gold-400"></i> ${opp.contactName}</div>` : ''}
+              ${opp.contactPhone ? `<div class="flex items-center gap-2 text-xs text-zinc-300"><i data-lucide="phone" class="w-4 h-4 text-gold-400"></i> <a href="tel:${opp.contactPhone}" class="hover:text-gold-400 transition-colors">${opp.contactPhone}</a></div>` : ''}
+              ${opp.contactEmail ? `<div class="flex items-center gap-2 text-xs text-zinc-300"><i data-lucide="mail" class="w-4 h-4 text-gold-400"></i> <a href="mailto:${opp.contactEmail}" class="hover:text-gold-400 transition-colors">${opp.contactEmail}</a></div>` : ''}
+            </div>
+          ` : '';
+
+          const photoHtml = opp.photoData ? `
+            <div class="w-full h-48 relative border-b border-white/10 shrink-0 overflow-hidden">
+              <img src="${opp.photoData}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-transparent to-transparent"></div>
+            </div>
+          ` : `
+            <div class="h-1.5 w-full bg-gradient-to-r from-gold-500/80 via-brand-400/60 to-transparent"></div>
+          `;
+
+          const bmBadgeClass = opp.benchmark === 'bm1' 
+            ? 'bg-brand-500/15 text-brand-200 border-brand-400/25' 
+            : 'bg-sky-500/15 text-sky-300 border-sky-400/25';
+
+          return `
+            <div class="glass-panel rounded-2xl shadow-card border border-white/10 flex flex-col overflow-hidden card-hover relative group">
+              ${photoHtml}
+              <div class="p-5 sm:p-6 flex-grow flex flex-col">
+                <div class="flex justify-between items-start gap-2 mb-3.5">
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider text-zinc-200 bg-white/[0.06] border border-white/10">
+                      ${opp.ministryName || 'Ministry'}
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider border ${bmBadgeClass}">
+                      ${opp.benchmarkName || 'Classification'}
+                    </span>
+                  </div>
+                  ${adminControls}
+                </div>
+                
+                <h3 class="font-display text-lg font-bold text-white leading-snug mb-2 group-hover:text-gold-400 transition-colors">${opp.title}</h3>
+                <p class="text-sm text-zinc-400 mb-5 line-clamp-2 leading-relaxed" title="${opp.summary}">${opp.summary}</p>
+                
+                <div class="space-y-2.5 mb-4 bg-black/50 p-3.5 rounded-xl border border-white/[0.07] mt-auto">
+                  <div class="flex items-start gap-2.5 text-xs text-zinc-300">
+                    <i data-lucide="clock" class="w-4 h-4 text-gold-400/80 shrink-0 mt-0.5"></i>
+                    <span>${opp.scheduleText}</span>
+                  </div>
+                  <div class="flex items-start gap-2.5 text-xs text-zinc-300">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-gold-400/80 shrink-0 mt-0.5"></i>
+                    <span>${opp.location}</span>
+                  </div>
+                  <div class="flex items-start gap-2.5 text-xs text-zinc-300">
+                    <i data-lucide="user" class="w-4 h-4 text-gold-400/80 shrink-0 mt-0.5"></i>
+                    <span>${opp.supervisor}</span>
+                  </div>
+                  <div class="pt-2.5 mt-2.5 border-t border-white/[0.07] flex items-center gap-2 text-xs font-bold ${needsColor} w-full">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${needBadgeBg}">
+                      <i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i>
+                      <span>Open Spots: ${currentNeed}</span>
+                    </span>
+                    ${needControls}
+                  </div>
+                </div>
+
+                ${giftTags ? `<div class="flex flex-wrap gap-1.5 mb-1">${giftTags}</div>` : ''}
+
+                ${interestBtn}
+              </div>
+              
+              <div class="bg-black/60 px-5 sm:px-6 py-3.5 border-t border-white/[0.07]">
+                <button onclick="toggleDetails('${opp.id}')" class="w-full flex justify-between items-center text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-gold-400 transition-colors">
+                  <span>View Role Details</span>
+                  <i data-lucide="chevron-down" id="icon-${opp.id}" class="w-4 h-4 text-gold-400 transition-transform duration-200"></i>
+                </button>
+                <div id="details-${opp.id}" class="hidden mt-3.5 pt-3.5 border-t border-white/[0.07]">
+                  <h4 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">Key Responsibilities</h4>
+                  <ul class="mb-3">${dutiesHtml}</ul>
+                  
+                  ${opp.prerequisites && opp.prerequisites.length > 0 ? `
+                    <h4 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">Prerequisites</h4>
+                    <div class="flex flex-wrap gap-1.5">
+                      ${opp.prerequisites.map(p => `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20"><i data-lucide="shield-alert" class="w-3 h-3"></i> ${p}</span>`).join('')}
+                    </div>
+                  ` : ''}
+                  
+                  ${contactHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.toggleDetails = (id) => {
+      const detailsEl = document.getElementById(`details-${id}`);
+      const iconEl = document.getElementById(`icon-${id}`);
+      if (detailsEl.classList.contains('hidden')) {
+        detailsEl.classList.remove('hidden');
+        iconEl.style.transform = 'rotate(180deg)';
+      } else {
+        detailsEl.classList.add('hidden');
+        iconEl.style.transform = 'rotate(0deg)';
+      }
+    };
+
+    window.openAddModal = () => {
+      editingId = null;
+      document.getElementById('addForm').reset();
+      document.getElementById('modalTitleText').innerText = "Add New Opportunity";
+      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'plus-circle');
+      document.getElementById('addSubmitText').innerText = "Save Opportunity";
+      document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
+      
+      document.querySelectorAll('.gift-cb').forEach(cb => cb.checked = false);
+      
+      document.getElementById('addModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.openEditModal = (id) => {
+      editingId = id;
+      const opp = rawOpportunities.find(o => o.id === id);
+      if(!opp) return;
+
+      document.getElementById('addForm').reset();
+      document.getElementById('modalTitleText').innerText = "Edit Opportunity";
+      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'pencil');
+      document.getElementById('addSubmitText').innerText = "Update Opportunity";
+      
+      if (opp.photoData) {
+         document.getElementById('photoHelpText').innerText = "Upload a new file to replace the current photo.";
+      } else {
+         document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
+      }
+
+      document.getElementById('addTitle').value = opp.title || '';
+      document.getElementById('addMinistry').value = opp.ministry || '';
+      document.getElementById('addBenchmark').value = opp.benchmark || '';
+      document.getElementById('addScheduleCat').value = opp.scheduleCategory || '';
+      document.getElementById('addLocation').value = opp.location || '';
+      document.getElementById('addScheduleText').value = opp.scheduleText || '';
+      document.getElementById('addSupervisor').value = opp.supervisor || '';
+      document.getElementById('addSummary').value = opp.summary || '';
+      document.getElementById('addDuties').value = (opp.duties || []).map(d => `- ${d}`).join('\n');
+      document.getElementById('addPrereqs').value = (opp.prerequisites || []).map(p => `- ${p}`).join('\n');
+      document.getElementById('addContactName').value = opp.contactName || '';
+      document.getElementById('addContactPhone').value = opp.contactPhone || '';
+      document.getElementById('addContactEmail').value = opp.contactEmail || '';
+      document.getElementById('addRemainingNeed').value = opp.remainingNeed !== undefined ? opp.remainingNeed : 0;
+
+      const gifts = opp.gifts || [];
+      document.querySelectorAll('.gift-cb').forEach(cb => {
+        cb.checked = gifts.includes(cb.value);
+      });
+
+      document.getElementById('addModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+    
+    window.closeAddModal = () => {
+      document.getElementById('addModal').classList.add('hidden');
+      editingId = null;
+    };
+
+    window.updateNeed = async (id, currentNeed, delta) => {
+      const newNeed = Math.max(0, currentNeed + delta);
+      try {
+        await updateDoc(doc(db, 'opportunities', id), { remainingNeed: newNeed });
+        window.showToast("Remaining need updated.", "success");
+      } catch (error) {
+        console.error("Update error:", error);
+        window.showToast("Error updating need. Check your Firestore Rules.", "error");
+      }
+    };
+
+    window.handleAddSubmit = async (e) => {
+      e.preventDefault();
+      
+      const btn = document.getElementById('addSubmitBtn');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...`;
+      if (window.lucide) window.lucide.createIcons();
+
+      try {
+        const fileInput = document.getElementById('addPhoto');
+        let newPhotoData = undefined; 
+        if (fileInput.files.length > 0) {
+          newPhotoData = await processImage(fileInput.files[0]);
+        }
+
+        const processList = (text) => text.split('\n').map(s => s.replace(/^- /, '').trim()).filter(s => s.length > 0);
+        const gifts = Array.from(document.querySelectorAll('.gift-cb:checked')).map(cb => cb.value);
+
+        const oppData = {
+          title: document.getElementById('addTitle').value.trim(),
+          ministry: document.getElementById('addMinistry').value,
+          ministryName: MINISTRIES[document.getElementById('addMinistry').value],
+          benchmark: document.getElementById('addBenchmark').value,
+          benchmarkName: BENCHMARKS[document.getElementById('addBenchmark').value],
+          scheduleCategory: document.getElementById('addScheduleCat').value,
+          location: document.getElementById('addLocation').value.trim(),
+          scheduleText: document.getElementById('addScheduleText').value.trim(),
+          supervisor: document.getElementById('addSupervisor').value.trim(),
+          summary: document.getElementById('addSummary').value.trim(),
+          duties: processList(document.getElementById('addDuties').value),
+          prerequisites: processList(document.getElementById('addPrereqs').value),
+          gifts: gifts,
+          contactName: document.getElementById('addContactName').value.trim(),
+          contactPhone: document.getElementById('addContactPhone').value.trim(),
+          contactEmail: document.getElementById('addContactEmail').value.trim(),
+          remainingNeed: parseInt(document.getElementById('addRemainingNeed').value) || 0,
+          createdBy: loggedInAdmin ? loggedInAdmin.name : 'Unknown'
+        };
+
+        if (newPhotoData !== undefined) {
+           oppData.photoData = newPhotoData;
+        }
+
+        if (editingId) {
+           await updateDoc(doc(db, 'opportunities', editingId), oppData);
+           window.showToast("Opportunity updated successfully!", "success");
+        } else {
+           oppData.createdAt = new Date().toISOString();
+           if (oppData.photoData === undefined) oppData.photoData = null;
+           await addDoc(collection(db, 'opportunities'), oppData);
+           window.showToast("Opportunity added successfully!", "success");
+        }
+        
+        window.closeAddModal();
+      } catch (error) {
+        console.error("Error saving document: ", error);
+        window.showToast("Error saving opportunity. Check your Firestore Rules.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    };
+
+    window.handleDelete = async (id) => {
+      if (!confirm("Are you sure you want to delete this opportunity? This cannot be undone.")) return;
+      try {
+        await deleteDoc(doc(db, 'opportunities', id));
+        window.showToast("Opportunity deleted.", "success");
+      } catch (error) {
+        console.error("Delete error:", error);
+        window.showToast("Error deleting opportunity.", "error");
+      }
+    };
+
+    window.showToast = (message, type = 'info') => {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const bgColors = { 
+        success: 'bg-emerald-950/95 border border-emerald-500/40 text-emerald-100', 
+        error: 'bg-rose-950/95 border border-rose-500/40 text-rose-100', 
+        info: 'bg-zinc-900/95 border border-white/15 text-zinc-100' 
+      };
+      
+      toast.className = `${bgColors[type] || bgColors.info} backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl text-sm font-medium transform transition-all duration-300 translate-y-0 opacity-100 flex items-center gap-2.5`;
+      const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0 text-gold-400"></i> <span>${message}</span>`;
+      
+      container.appendChild(toast);
+      if (window.lucide) window.lucide.createIcons({ root: toast });
+      
+      setTimeout(() => {
+        toast.classList.replace('translate-y-0', 'translate-y-2');
+        toast.classList.replace('opacity-100', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+
+    initApp();
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
