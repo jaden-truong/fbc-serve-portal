@@ -219,6 +219,10 @@
               <input type="checkbox" value="pew" data-label="Pew Partners" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
               <span>Pew Partners</span>
             </label>
+            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="lifegroup" data-label="LIFE Group" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+              <span>LIFE Group</span>
+            </label>
           </div>
         </div>
 
@@ -499,6 +503,7 @@
                   <option value="impact">Community Impact</option>
                   <option value="prayer">Prayer & Discipleship</option>
                   <option value="pew">Pew Partners</option>
+                  <option value="lifegroup">LIFE Group</option>
                 </select>
               </div>
               <div>
@@ -639,6 +644,7 @@
     let loggedInAdmin = null; 
     let isMemberView = false; 
     let editingId = null;
+    let duplicatedPhotoData = null;
 
     const MINISTRIES = {
       "preschool": "Nursery & Preschool",
@@ -649,7 +655,8 @@
       "kitchen": "Kitchen & Fellowship",
       "impact": "Community Impact",
       "prayer": "Prayer & Discipleship",
-      "pew": "Pew Partners"
+      "pew": "Pew Partners",
+      "lifegroup": "LIFE Group"
     };
 
     const BENCHMARKS = {
@@ -1107,6 +1114,7 @@
           const showAdminControls = loggedInAdmin && !isMemberView;
           const adminControls = showAdminControls ? `
             <div class="flex items-center gap-1">
+              <button onclick="openDuplicateModal('${opp.id}')" title="Duplicate Opportunity" class="text-neutral-300 hover:text-white hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="copy" class="w-4 h-4"></i></button>
               <button onclick="openEditModal('${opp.id}')" title="Edit Opportunity" class="text-brand-500 hover:text-brand-400 hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
               <button onclick="handleDelete('${opp.id}')" title="Delete Opportunity" class="text-red-500 hover:text-red-400 hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
@@ -1231,37 +1239,8 @@
       }
     };
 
-    window.openAddModal = () => {
-      editingId = null;
-      document.getElementById('addForm').reset();
-      document.getElementById('modalTitleText').innerText = "Add New Opportunity";
-      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'plus-circle');
-      document.getElementById('addSubmitText').innerText = "Save Opportunity";
-      document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
-      
-      document.querySelectorAll('.gift-cb').forEach(cb => cb.checked = false);
-      
-      document.getElementById('addModal').classList.remove('hidden');
-      if (window.lucide) window.lucide.createIcons();
-    };
-
-    window.openEditModal = (id) => {
-      editingId = id;
-      const opp = rawOpportunities.find(o => o.id === id);
-      if(!opp) return;
-
-      document.getElementById('addForm').reset();
-      document.getElementById('modalTitleText').innerText = "Edit Opportunity";
-      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'pencil');
-      document.getElementById('addSubmitText').innerText = "Update Opportunity";
-      
-      if (opp.photoData) {
-         document.getElementById('photoHelpText').innerText = "Upload a new file to replace the current photo.";
-      } else {
-         document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
-      }
-
-      document.getElementById('addTitle').value = opp.title || '';
+    function populateOppForm(opp, isDuplicate = false) {
+      document.getElementById('addTitle').value = isDuplicate ? `${opp.title || ''} (Copy)` : (opp.title || '');
       document.getElementById('addMinistry').value = opp.ministry || '';
       document.getElementById('addBenchmark').value = opp.benchmark || '';
       document.getElementById('addScheduleCat').value = opp.scheduleCategory || '';
@@ -1280,6 +1259,64 @@
       document.querySelectorAll('.gift-cb').forEach(cb => {
         cb.checked = gifts.includes(cb.value);
       });
+    }
+
+    window.openAddModal = () => {
+      editingId = null;
+      duplicatedPhotoData = null;
+      document.getElementById('addForm').reset();
+      document.getElementById('modalTitleText').innerText = "Add New Opportunity";
+      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'plus-circle');
+      document.getElementById('addSubmitText').innerText = "Save Opportunity";
+      document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
+      
+      document.querySelectorAll('.gift-cb').forEach(cb => cb.checked = false);
+      
+      document.getElementById('addModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.openEditModal = (id) => {
+      editingId = id;
+      duplicatedPhotoData = null;
+      const opp = rawOpportunities.find(o => o.id === id);
+      if(!opp) return;
+
+      document.getElementById('addForm').reset();
+      document.getElementById('modalTitleText').innerText = "Edit Opportunity";
+      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'pencil');
+      document.getElementById('addSubmitText').innerText = "Update Opportunity";
+      
+      if (opp.photoData) {
+         document.getElementById('photoHelpText').innerText = "Upload a new file to replace the current photo.";
+      } else {
+         document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
+      }
+
+      populateOppForm(opp, false);
+
+      document.getElementById('addModal').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.openDuplicateModal = (id) => {
+      editingId = null;
+      const opp = rawOpportunities.find(o => o.id === id);
+      if(!opp) return;
+
+      duplicatedPhotoData = opp.photoData || null;
+      document.getElementById('addForm').reset();
+      document.getElementById('modalTitleText').innerText = "Duplicate Opportunity";
+      document.getElementById('modalTitleIcon').setAttribute('data-lucide', 'copy');
+      document.getElementById('addSubmitText').innerText = "Create Duplicate";
+
+      if (opp.photoData) {
+         document.getElementById('photoHelpText').innerText = "Existing card photo will be copied unless you upload a new file.";
+      } else {
+         document.getElementById('photoHelpText').innerText = "Image will be automatically resized for fast loading.";
+      }
+
+      populateOppForm(opp, true);
 
       document.getElementById('addModal').classList.remove('hidden');
       if (window.lucide) window.lucide.createIcons();
@@ -1288,6 +1325,7 @@
     window.closeAddModal = () => {
       document.getElementById('addModal').classList.add('hidden');
       editingId = null;
+      duplicatedPhotoData = null;
     };
 
     window.updateNeed = async (id, currentNeed, delta) => {
@@ -1350,7 +1388,9 @@
            window.showToast("Opportunity updated successfully!", "success");
         } else {
            oppData.createdAt = new Date().toISOString();
-           if (oppData.photoData === undefined) oppData.photoData = null;
+           if (oppData.photoData === undefined) {
+             oppData.photoData = duplicatedPhotoData || null;
+           }
            await addDoc(collection(db, 'opportunities'), oppData);
            window.showToast("Opportunity added successfully!", "success");
         }
