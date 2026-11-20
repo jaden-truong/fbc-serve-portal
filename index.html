@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" style="color-scheme: dark;">
+<html lang="en" style="color-scheme: dark;" class="h-full w-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FBC Vidor • Serving Opportunity Finder</title>
+  <title>FBC Vidor • Serve Portal (Admin)</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts: Droid Serif & Playfair Display -->
+  <!-- Google Fonts: Playfair Display & Droid Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Droid+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -24,8 +24,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Droid Serif', 'serif'],
-            serif: ['Playfair Display', 'serif'],
+            sans: ['"Droid Serif"', 'serif'],
+            serif: ['"Playfair Display"', 'serif'],
           },
           colors: {
             brand: {
@@ -48,15 +48,21 @@
   </script>
 
   <style>
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #000000; }
-    ::-webkit-scrollbar-thumb { background: #404040; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #525252; }
-    
-    .glass-nav {
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    body {
+      font-family: 'Droid Serif', serif;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Completely hide scrollbars for clean Wix embedding */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     
     .modal-enter { animation: modalFadeIn 0.2s ease-out forwards; }
@@ -71,19 +77,17 @@
       transform: translateY(-4px);
       box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.8);
     }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Playfair Display', serif;
-    }
   </style>
 </head>
-<body class="bg-black text-neutral-300 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-black">
+<body class="bg-black text-neutral-100 h-full w-full overflow-hidden flex flex-col selection:bg-brand-500 selection:text-black border-2 border-neutral-700 m-0 box-border rounded-xl">
 
-  <header class="sticky top-0 z-40 glass-nav border-b border-neutral-800 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center gap-3">
-          <svg viewBox="0 0 100 100" class="w-10 h-10 rounded-full shadow-md bg-brand-500" xmlns="http://www.w3.org/2000/svg">
+  <main class="flex-grow overflow-y-auto no-scrollbar flex flex-col max-w-[1600px] w-full mx-auto px-2 sm:px-4 py-4">
+    
+    <!-- Top Header & Controls -->
+    <div class="mb-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 shrink-0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <svg viewBox="0 0 100 100" class="w-8 h-8 rounded-full shadow-md bg-brand-500 shrink-0" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="14.5" fill="#ffffff" />
             <g fill="#ffffff">
               <circle cx="50" cy="21" r="7.5" />
@@ -96,270 +100,246 @@
             </g>
           </svg>
           <div>
-            <h1 class="font-bold text-lg leading-tight text-white tracking-tight font-serif">FBC Vidor</h1>
-            <p class="text-xs text-neutral-400 font-medium tracking-wide uppercase select-none cursor-default font-sans">Serve Portal</p>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-none">Serve Portal</h2>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-widest mt-0.5">FBC Vidor • Admin Console</p>
           </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <button id="memberViewToggleBtn" onclick="toggleMemberView()" class="hidden items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors border border-neutral-700">
-            <i data-lucide="eye" class="w-4 h-4 text-brand-500"></i>
-            <span id="memberViewToggleText">Member View</span>
-          </button>
-
-          <button id="adminNotifBtn" onclick="openGlobalNotifications()" class="hidden relative items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 px-3 py-2 rounded-lg text-sm font-bold transition-colors border border-neutral-800">
-            <i data-lucide="bell" class="w-4 h-4 text-brand-500"></i>
-            <span class="hidden sm:inline">Notifications</span>
-            <span id="globalNotifBadge" class="absolute -top-1.5 -right-1.5 bg-brand-500 text-black text-xs font-extrabold px-1.5 py-0.2 rounded-full hidden">0</span>
-          </button>
-          
-          <button id="adminAddBtn" onclick="openAddModal()" class="hidden items-center gap-2 bg-brand-500 hover:bg-brand-400 text-black px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">Add Opportunity</span>
-          </button>
-
-          <button id="adminLoginNavBtn" onclick="openAuth()" class="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 px-4 py-2 rounded-lg text-sm font-semibold transition-colors border border-neutral-800">
-            <i data-lucide="lock" class="w-4 h-4 text-brand-500"></i>
-            <span>Login</span>
-          </button>
         </div>
       </div>
-    </div>
-  </header>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-    
-    <div id="heroSection" class="rounded-2xl shadow-sm border border-neutral-800 mb-8 relative overflow-hidden bg-cover bg-center transition-all duration-500">
-      <div id="heroOverlay" class="absolute inset-0 bg-neutral-900 transition-all duration-500 z-0"></div>
-      
-      <div class="absolute top-0 right-0 -mt-16 -mr-16 text-neutral-800 opacity-50 pointer-events-none z-0">
-        <i data-lucide="heart-handshake" class="w-96 h-96"></i>
-      </div>
-
-      <button id="adminHeroBtn" onclick="document.getElementById('heroPhotoUpload').click()" class="hidden absolute top-4 right-4 z-20 items-center gap-2 bg-black/60 hover:bg-black/80 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-neutral-700 backdrop-blur-sm shadow-sm">
-        <i data-lucide="camera" class="w-4 h-4"></i>
-        <span id="adminHeroBtnText">Change Cover</span>
-      </button>
-      <input type="file" id="heroPhotoUpload" accept="image/*" class="hidden" onchange="handleHeroPhotoChange(event)">
-
-      <div class="relative z-10 max-w-3xl p-8">
-        <h2 class="text-3xl font-extrabold text-white mb-4 tracking-tight font-serif">Dashboard</h2>
-        <div class="flex flex-wrap gap-4">
-          <div class="bg-black/40 backdrop-blur-md border border-neutral-700/50 rounded-xl p-4 flex-1 min-w-[150px] shadow-sm">
-            <div class="text-sm font-semibold text-neutral-400 uppercase tracking-wide mb-1">Total Roles</div>
-            <div class="text-3xl font-bold text-white font-serif" id="statTotal">0</div>
-          </div>
-          <div class="bg-black/40 backdrop-blur-md border border-neutral-700/50 rounded-xl p-4 flex-1 min-w-[150px] shadow-sm">
-            <div class="text-sm font-semibold text-neutral-400 uppercase tracking-wide mb-1">Primary Teams</div>
-            <div class="text-3xl font-bold text-white font-serif" id="statBm1">0</div>
-          </div>
-          <div class="bg-black/40 backdrop-blur-md border border-neutral-700/50 rounded-xl p-4 flex-1 min-w-[150px] shadow-sm">
-            <div class="text-sm font-semibold text-neutral-400 uppercase tracking-wide mb-1">Event Shifts</div>
-            <div class="text-3xl font-bold text-white font-serif" id="statBm2">0</div>
-          </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Compact Stats Pill -->
+        <div class="flex items-center gap-3 text-[11px] uppercase tracking-wider font-bold text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-lg">
+          <div>Total: <span id="statTotal" class="text-white text-xs">0</span></div>
+          <div>Primary: <span id="statBm1" class="text-white text-xs">0</span></div>
+          <div>Events: <span id="statBm2" class="text-white text-xs">0</span></div>
         </div>
+
+        <!-- Admin Action Buttons -->
+        <button id="memberViewToggleBtn" onclick="toggleMemberView()" class="hidden items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-neutral-800">
+          <i data-lucide="eye" class="w-3.5 h-3.5 text-brand-500"></i>
+          <span id="memberViewToggleText">Member View</span>
+        </button>
+
+        <button id="adminNotifBtn" onclick="openGlobalNotifications()" class="hidden relative items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-neutral-800">
+          <i data-lucide="bell" class="w-3.5 h-3.5 text-brand-500"></i>
+          <span class="hidden sm:inline">Notifications</span>
+          <span id="globalNotifBadge" class="absolute -top-1.5 -right-1.5 bg-brand-500 text-black text-[10px] font-extrabold px-1.5 py-0.2 rounded-full hidden">0</span>
+        </button>
+        
+        <button id="adminAddBtn" onclick="openAddModal()" class="hidden items-center gap-1.5 bg-brand-500 hover:bg-brand-400 text-black px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm">
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+          <span>Add Opportunity</span>
+        </button>
+
+        <button id="adminLoginNavBtn" onclick="openAuth()" class="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-neutral-800">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-brand-500"></i>
+          <span>Admin Login</span>
+        </button>
       </div>
     </div>
 
-    <div class="bg-neutral-900 rounded-2xl shadow-sm border border-neutral-800 p-6 mb-8">
-      <div class="flex flex-col md:flex-row gap-4 mb-4">
+    <!-- Search & Multi-Select Filter Bar -->
+    <div class="bg-neutral-900 rounded-xl shadow-sm border border-neutral-800 p-3 mb-5 shrink-0">
+      <div class="flex flex-col md:flex-row gap-2 mb-3">
         <div class="flex-grow relative">
-          <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500"></i>
-          <input type="text" id="searchInput" placeholder="Search roles by keyword, ministry, skills..." class="w-full pl-10 pr-4 py-2.5 bg-black border border-neutral-800 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow text-sm text-white placeholder:text-neutral-600" oninput="handleFilterChange()">
+          <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"></i>
+          <input type="text" id="searchInput" placeholder="Search roles by keyword, ministry, skills..." class="w-full pl-9 pr-3 py-2 bg-black border border-neutral-800 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow text-xs text-white placeholder:text-neutral-600" oninput="handleFilterChange()">
         </div>
-        <button onclick="resetFilters()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 rounded-xl transition-colors shrink-0">
-          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          Reset Filters
+        <button onclick="resetFilters()" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors shrink-0">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          Reset
         </button>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <!-- Ministry Multi-Select Dropdown -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <!-- Ministry Multi-Select -->
         <div class="relative filter-dropdown-wrapper">
-          <label class="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Ministry</label>
-          <button type="button" onclick="toggleFilterMenu('menuMinistry')" class="w-full p-2.5 bg-black border border-neutral-800 rounded-xl text-sm text-neutral-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 flex justify-between items-center text-left">
+          <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Ministry</label>
+          <button type="button" onclick="toggleFilterMenu('menuMinistry')" class="w-full p-2 bg-black border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:ring-2 focus:ring-brand-500 flex justify-between items-center text-left">
             <span id="labelMinistry" class="truncate">All Ministries</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-neutral-500 shrink-0 ml-2"></i>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-500 shrink-0 ml-1"></i>
           </button>
-          <div id="menuMinistry" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="preschool" data-label="Nursery & Preschool" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+          <div id="menuMinistry" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl max-h-48 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="preschool" data-label="Nursery & Preschool" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Nursery & Preschool</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="children" data-label="Children's Ministry" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="children" data-label="Children's Ministry" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Children's Ministry</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="youth" data-label="Youth & Students" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="youth" data-label="Youth & Students" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Youth & Students</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="impressions" data-label="First Impressions" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="impressions" data-label="First Impressions" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>First Impressions</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="worship" data-label="Worship & Tech" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="worship" data-label="Worship & Tech" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Worship & Tech</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="kitchen" data-label="Kitchen & Fellowship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="kitchen" data-label="Kitchen & Fellowship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Kitchen & Fellowship</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="impact" data-label="Community Impact" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="impact" data-label="Community Impact" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Community Impact</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="prayer" data-label="Prayer & Discipleship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="prayer" data-label="Prayer & Discipleship" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Prayer & Discipleship</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="pew" data-label="Pew Partners" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="pew" data-label="Pew Partners" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>Pew Partners</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="lifegroup" data-label="LIFE Group" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="lifegroup" data-label="LIFE Group" onchange="handleMultiSelectChange('Ministry')" class="filter-cb-Ministry text-brand-500 rounded bg-black border-neutral-700">
               <span>LIFE Group</span>
             </label>
           </div>
         </div>
 
-        <!-- Classification Multi-Select Dropdown -->
+        <!-- Classification Multi-Select -->
         <div class="relative filter-dropdown-wrapper">
-          <label class="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Classification</label>
-          <button type="button" onclick="toggleFilterMenu('menuBenchmark')" class="w-full p-2.5 bg-black border border-neutral-800 rounded-xl text-sm text-neutral-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 flex justify-between items-center text-left">
+          <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Classification</label>
+          <button type="button" onclick="toggleFilterMenu('menuBenchmark')" class="w-full p-2 bg-black border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:ring-2 focus:ring-brand-500 flex justify-between items-center text-left">
             <span id="labelBenchmark" class="truncate">All Classifications</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-neutral-500 shrink-0 ml-2"></i>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-500 shrink-0 ml-1"></i>
           </button>
-          <div id="menuBenchmark" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="bm1" data-label="Primary Team" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+          <div id="menuBenchmark" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl max-h-48 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="bm1" data-label="Primary Team" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark text-brand-500 rounded bg-black border-neutral-700">
               <span>Primary Team</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="bm2" data-label="Event Shift" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="bm2" data-label="Event Shift" onchange="handleMultiSelectChange('Benchmark')" class="filter-cb-Benchmark text-brand-500 rounded bg-black border-neutral-700">
               <span>Event Shift</span>
             </label>
           </div>
         </div>
 
-        <!-- Spiritual Gift Multi-Select Dropdown -->
+        <!-- Spiritual Gift Multi-Select -->
         <div class="relative filter-dropdown-wrapper">
-          <label class="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Spiritual Gift</label>
-          <button type="button" onclick="toggleFilterMenu('menuGift')" class="w-full p-2.5 bg-black border border-neutral-800 rounded-xl text-sm text-neutral-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 flex justify-between items-center text-left">
+          <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Spiritual Gift</label>
+          <button type="button" onclick="toggleFilterMenu('menuGift')" class="w-full p-2 bg-black border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:ring-2 focus:ring-brand-500 flex justify-between items-center text-left">
             <span id="labelGift" class="truncate">All Gifts</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-neutral-500 shrink-0 ml-2"></i>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-500 shrink-0 ml-1"></i>
           </button>
-          <div id="menuGift" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Leadership" data-label="Leadership" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+          <div id="menuGift" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl max-h-48 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Leadership" data-label="Leadership" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Leadership</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Administration" data-label="Administration" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Administration" data-label="Administration" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Administration</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Teaching" data-label="Teaching" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Teaching" data-label="Teaching" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Teaching</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Knowledge" data-label="Knowledge" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Knowledge" data-label="Knowledge" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Knowledge</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Wisdom" data-label="Wisdom" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Wisdom" data-label="Wisdom" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Wisdom</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Prophecy" data-label="Prophecy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Prophecy" data-label="Prophecy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Prophecy</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Discernment" data-label="Discernment" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Discernment" data-label="Discernment" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Discernment</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Exhortation" data-label="Exhortation" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Exhortation" data-label="Exhortation" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Exhortation</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Shepherding" data-label="Shepherding" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Shepherding" data-label="Shepherding" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Shepherding</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Faith" data-label="Faith" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Faith" data-label="Faith" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Faith</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Evangelism" data-label="Evangelism" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Evangelism" data-label="Evangelism" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Evangelism</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Apostleship" data-label="Apostleship" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Apostleship" data-label="Apostleship" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Apostleship</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Service/Helps" data-label="Service/Helps" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Service/Helps" data-label="Service/Helps" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Service/Helps</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Mercy" data-label="Mercy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Mercy" data-label="Mercy" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Mercy</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Giving" data-label="Giving" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Giving" data-label="Giving" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Giving</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="Hospitality" data-label="Hospitality" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="Hospitality" data-label="Hospitality" onchange="handleMultiSelectChange('Gift')" class="filter-cb-Gift text-brand-500 rounded bg-black border-neutral-700">
               <span>Hospitality</span>
             </label>
           </div>
         </div>
 
-        <!-- Schedule Multi-Select Dropdown -->
+        <!-- Schedule Multi-Select -->
         <div class="relative filter-dropdown-wrapper">
-          <label class="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Schedule</label>
-          <button type="button" onclick="toggleFilterMenu('menuSchedule')" class="w-full p-2.5 bg-black border border-neutral-800 rounded-xl text-sm text-neutral-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 flex justify-between items-center text-left">
+          <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Schedule</label>
+          <button type="button" onclick="toggleFilterMenu('menuSchedule')" class="w-full p-2 bg-black border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:ring-2 focus:ring-brand-500 flex justify-between items-center text-left">
             <span id="labelSchedule" class="truncate">All Schedules</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-neutral-500 shrink-0 ml-2"></i>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-500 shrink-0 ml-1"></i>
           </button>
-          <div id="menuSchedule" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1.5 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto p-2 space-y-1">
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="sun-morning" data-label="Sunday Mornings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+          <div id="menuSchedule" class="filter-dropdown-menu hidden absolute z-30 w-full mt-1 bg-neutral-900 border border-neutral-700 rounded-lg shadow-2xl max-h-48 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="sun-morning" data-label="Sunday Mornings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700">
               <span>Sunday Mornings</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="sun-lg" data-label="Sunday LIFE Group" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="sun-lg" data-label="Sunday LIFE Group" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700">
               <span>Sunday LIFE Group</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="wed-nite" data-label="Wednesday Evenings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="wed-nite" data-label="Wednesday Evenings" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700">
               <span>Wednesday Evenings</span>
             </label>
-            <label class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-800 text-sm text-neutral-200 cursor-pointer">
-              <input type="checkbox" value="flexible" data-label="Flexible / Seasonal" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700 focus:ring-brand-500">
+            <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-800 text-xs text-neutral-200 cursor-pointer">
+              <input type="checkbox" value="flexible" data-label="Flexible / Seasonal" onchange="handleMultiSelectChange('Schedule')" class="filter-cb-Schedule text-brand-500 rounded bg-black border-neutral-700">
               <span>Flexible / Seasonal</span>
             </label>
           </div>
         </div>
-
       </div>
     </div>
 
-    <div class="mb-4 flex items-center justify-between text-sm text-neutral-500">
+    <div class="mb-3 flex items-center justify-between text-[11px] font-bold text-neutral-500 tracking-wider uppercase shrink-0">
       <div id="resultsCount">Loading opportunities...</div>
     </div>
 
-    <div id="opportunitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <!-- Responsive 1-to-5 Column Grid -->
+    <div id="opportunitiesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+
+    <!-- Bottom Pagination Bar -->
+    <div id="paginationControls" class="flex items-center justify-between mt-auto pt-5 pb-1 shrink-0 border-t border-neutral-800"></div>
 
   </main>
 
   <!-- Auth Modal -->
-  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto no-scrollbar">
     <div class="min-h-screen px-4 text-center flex items-center justify-center">
       <div class="inline-block w-full max-w-sm bg-neutral-900 rounded-2xl text-left shadow-2xl border border-neutral-800 modal-enter my-8 p-6">
         <div class="flex justify-between items-center mb-5">
@@ -371,7 +351,7 @@
         <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
           <div>
             <label class="block text-sm font-semibold text-neutral-300 mb-1">Name</label>
-            <input type="text" id="authN" required class="w-full p-2.5 bg-black border border-neutral-700 rounded-lg text-sm text-white focus:ring-2 focus:ring-brand-500" placeholder="e.g. jane@email.com">
+            <input type="text" id="authN" required class="w-full p-2.5 bg-black border border-neutral-700 rounded-lg text-sm text-white focus:ring-2 focus:ring-brand-500" placeholder="e.g. Jane Smith">
           </div>
           <div>
             <label class="block text-sm font-semibold text-neutral-300 mb-1">PIN (4 Digits)</label>
@@ -386,7 +366,7 @@
   </div>
 
   <!-- Interested Modal -->
-  <div id="interestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="interestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto no-scrollbar">
     <div class="min-h-screen px-4 text-center flex items-center justify-center">
       <div class="inline-block w-full max-w-md bg-neutral-900 rounded-2xl text-left shadow-2xl border border-neutral-800 modal-enter my-8 p-6">
         <div class="flex justify-between items-center mb-4">
@@ -424,7 +404,7 @@
   </div>
 
   <!-- Admin View Interested List Modal -->
-  <div id="viewInterestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="viewInterestModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto no-scrollbar">
     <div class="min-h-screen px-4 text-center flex items-center justify-center">
       <div class="inline-block w-full max-w-lg bg-neutral-900 rounded-2xl text-left shadow-2xl border border-neutral-800 modal-enter my-8 p-6">
         <div class="flex justify-between items-center mb-4">
@@ -436,13 +416,13 @@
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
-        <div id="interestListContainer" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+        <div id="interestListContainer" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar"></div>
       </div>
     </div>
   </div>
 
   <!-- Global Notifications Modal -->
-  <div id="globalNotifModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="globalNotifModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto no-scrollbar">
     <div class="min-h-screen px-4 text-center flex items-center justify-center">
       <div class="inline-block w-full max-w-2xl bg-neutral-900 rounded-2xl text-left shadow-2xl border border-neutral-800 modal-enter my-8 p-6">
         <div class="flex justify-between items-center mb-4 border-b border-neutral-800 pb-3">
@@ -455,13 +435,13 @@
           </button>
         </div>
         <p class="text-xs text-neutral-400 mb-4">Inquiries for your roles, ordered from newest to oldest:</p>
-        <div id="globalNotifContainer" class="space-y-3 max-h-[450px] overflow-y-auto pr-1"></div>
+        <div id="globalNotifContainer" class="space-y-3 max-h-[450px] overflow-y-auto no-scrollbar"></div>
       </div>
     </div>
   </div>
 
-  <!-- Add / Edit Opportunity Modal -->
-  <div id="addModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <!-- Add / Edit / Duplicate Opportunity Modal -->
+  <div id="addModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm overflow-y-auto no-scrollbar">
     <div class="min-h-screen px-4 text-center flex items-center justify-center">
       <div class="inline-block w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-2xl text-left shadow-2xl modal-enter my-8">
         
@@ -577,7 +557,7 @@
             </div>
 
             <div class="sm:col-span-2 pt-4 border-t border-neutral-800">
-              <h4 class="text-sm font-bold text-white mb-3 font-serif">Contact Person & Needs</h4>
+              <h4 class="text-sm font-bold text-white mb-3">Contact Person & Needs</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label class="block text-sm font-semibold text-neutral-300 mb-1">Contact Name *</label>
@@ -616,7 +596,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
     // ==========================================
     // EMAILJS CONFIGURATION (FOR EMAIL ALERTS)
@@ -646,6 +626,10 @@
     let editingId = null;
     let duplicatedPhotoData = null;
 
+    // Pagination variables
+    let currentPage = 1;
+    let itemsPerPage = 8;
+
     const MINISTRIES = {
       "preschool": "Nursery & Preschool",
       "children": "Children's Ministry",
@@ -669,6 +653,31 @@
       Benchmark: "All Classifications",
       Gift: "All Gifts",
       Schedule: "All Schedules"
+    };
+
+    // Calculate dynamic rows and columns based on window size
+    window.updateLayout = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      let cols = 1;
+      if (w >= 1280) cols = 5;
+      else if (w >= 1024) cols = 4;
+      else if (w >= 768) cols = 3;
+      else if (w >= 640) cols = 2;
+
+      let rows = Math.floor((h - 320) / 320);
+      if (rows < 1) rows = 1;
+
+      itemsPerPage = cols * rows;
+      window.renderUI();
+    };
+
+    window.addEventListener('resize', window.updateLayout);
+
+    window.changePage = (delta) => {
+      currentPage += delta;
+      window.renderUI();
     };
 
     window.toggleFilterMenu = (menuId) => {
@@ -696,6 +705,7 @@
       } else {
         labelEl.textContent = `${checkedBoxes.length} selected`;
       }
+      currentPage = 1;
       window.renderUI();
     };
 
@@ -720,7 +730,7 @@
           rawOpportunities.push({ id: d.id, ...d.data() });
         });
         rawOpportunities.sort((a, b) => a.title.localeCompare(b.title));
-        window.renderUI();
+        window.updateLayout();
       }, (error) => {
         console.error("Fetch error:", error);
         window.showToast("Failed to load opportunities from database.", "error");
@@ -734,20 +744,9 @@
         });
         allInterests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         window.updateGlobalNotificationBadge();
-        if(loggedInAdmin && !isMemberView) window.renderUI();
+        if(loggedInAdmin && !isMemberView) window.updateLayout();
       }, (error) => {
         console.error("Interest fetch error:", error);
-      });
-
-      onSnapshot(doc(db, 'settings', 'heroConfig'), (docSnap) => {
-        const overlay = document.getElementById('heroOverlay');
-        if (docSnap.exists() && docSnap.data().photoData) {
-          document.getElementById('heroSection').style.backgroundImage = `url(${docSnap.data().photoData})`;
-          overlay.className = 'absolute inset-0 bg-black/70 transition-all duration-500 z-0';
-        } else {
-          document.getElementById('heroSection').style.backgroundImage = 'none';
-          overlay.className = 'absolute inset-0 bg-neutral-900 transition-all duration-500 z-0';
-        }
       });
     }
 
@@ -839,10 +838,6 @@
           
           document.getElementById('adminAddBtn').classList.remove('hidden');
           document.getElementById('adminAddBtn').classList.add('inline-flex');
-          if (loggedInAdmin.level === 'super') {
-            document.getElementById('adminHeroBtn').classList.remove('hidden');
-            document.getElementById('adminHeroBtn').classList.add('inline-flex');
-          }
           document.getElementById('adminNotifBtn').classList.remove('hidden');
           document.getElementById('adminNotifBtn').classList.add('inline-flex');
           document.getElementById('memberViewToggleBtn').classList.remove('hidden');
@@ -861,7 +856,7 @@
         window.showToast("Authentication failed. Check connection or Firestore rules.", "error");
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<span>Authenticate</span>`;
+        btn.innerHTML = `<span>Login</span>`;
         if (window.lucide) window.lucide.createIcons();
       }
     };
@@ -877,38 +872,6 @@
         window.showToast("Switched back to Admin View.", "info");
       }
       window.renderUI();
-    };
-
-    window.handleHeroPhotoChange = async (e) => {
-      if (!loggedInAdmin || loggedInAdmin.level !== 'super') {
-        return window.showToast("Only Super Admins can change the cover photo.", "error");
-      }
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const btnText = document.getElementById('adminHeroBtnText');
-      const icon = document.querySelector('#adminHeroBtn i');
-      
-      const originalText = btnText.innerText;
-      btnText.innerText = "Saving...";
-      icon.setAttribute('data-lucide', 'loader-2');
-      icon.classList.add('animate-spin');
-      if (window.lucide) window.lucide.createIcons();
-
-      try {
-        const photoData = await processImage(file, 1920, 1080, 0.8);
-        await setDoc(doc(db, 'settings', 'heroConfig'), { photoData }, { merge: true });
-        window.showToast("Cover photo updated!", "success");
-      } catch (error) {
-        console.error("Hero upload error:", error);
-        window.showToast("Error updating cover photo.", "error");
-      } finally {
-        btnText.innerText = originalText;
-        icon.setAttribute('data-lucide', 'camera');
-        icon.classList.remove('animate-spin');
-        if (window.lucide) window.lucide.createIcons();
-        e.target.value = ''; 
-      }
     };
 
     window.openInterestModal = (oppId, oppTitle, oppCreator) => {
@@ -1048,7 +1011,10 @@
       document.getElementById('globalNotifModal').classList.add('hidden');
     };
 
-    window.handleFilterChange = () => window.renderUI();
+    window.handleFilterChange = () => {
+      currentPage = 1;
+      window.renderUI();
+    };
     
     window.resetFilters = () => {
       document.getElementById("searchInput").value = "";
@@ -1058,6 +1024,7 @@
         if (labelEl) labelEl.textContent = DEFAULT_FILTER_LABELS[cat];
       });
       document.querySelectorAll('.filter-dropdown-menu').forEach(m => m.classList.add('hidden'));
+      currentPage = 1;
       window.renderUI();
     };
 
@@ -1094,136 +1061,163 @@
       document.getElementById("statBm1").textContent = sourceOpportunities.filter(o => o.benchmark === 'bm1').length;
       document.getElementById("statBm2").textContent = sourceOpportunities.filter(o => o.benchmark === 'bm2').length;
       
-      document.getElementById("resultsCount").innerHTML = `Showing <span class="font-bold text-white">${filtered.length}</span> of <span class="font-bold text-white">${sourceOpportunities.length}</span> opportunities`;
+      const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+      
+      const startRecord = filtered.length === 0 ? 0 : ((currentPage - 1) * itemsPerPage) + 1;
+      const endRecord = Math.min(currentPage * itemsPerPage, filtered.length);
+      document.getElementById("resultsCount").innerHTML = `Showing <span class="text-white">${startRecord}-${endRecord}</span> of <span class="text-white">${filtered.length}</span>`;
 
       const grid = document.getElementById("opportunitiesGrid");
       
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div class="col-span-full py-16 text-center bg-neutral-900 rounded-2xl border border-neutral-800">
-            <i data-lucide="search-x" class="w-12 h-12 text-neutral-600 mx-auto mb-3"></i>
-            <h3 class="text-lg font-bold text-white mb-1 font-serif">No opportunities found</h3>
-            <p class="text-neutral-400 text-sm max-w-sm mx-auto">Try adjusting your filters or search terms.</p>
+          <div class="col-span-full py-10 text-center bg-neutral-900 rounded-xl border border-neutral-800">
+            <i data-lucide="search-x" class="w-10 h-10 text-neutral-600 mx-auto mb-2"></i>
+            <h3 class="text-base font-bold text-white mb-1">No opportunities found</h3>
+            <p class="text-neutral-400 text-xs max-w-sm mx-auto">Try adjusting your filters or search terms.</p>
           </div>
         `;
       } else {
-        grid.innerHTML = filtered.map(opp => {
-          const giftTags = (opp.gifts || []).map(g => `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-800 text-neutral-300 border border-neutral-700">${g}</span>`).join('');
-          const dutiesHtml = (opp.duties || []).map(d => `<li class="text-xs text-neutral-300 mb-1 flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-500 shrink-0 mt-0.5"></i> <span>${d}</span></li>`).join('');
+        grid.innerHTML = paginated.map(opp => {
+          const giftTags = (opp.gifts || []).map(g => `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-800 text-neutral-300 border border-neutral-700">${g}</span>`).join('');
+          const dutiesHtml = (opp.duties || []).map(d => `<li class="text-[11px] text-neutral-300 mb-1 flex items-start gap-1.5"><i data-lucide="check" class="w-3 h-3 text-brand-500 shrink-0 mt-0.5"></i> <span>${d}</span></li>`).join('');
           
           const showAdminControls = loggedInAdmin && !isMemberView;
           const adminControls = showAdminControls ? `
-            <div class="flex items-center gap-1">
-              <button onclick="openDuplicateModal('${opp.id}')" title="Duplicate Opportunity" class="text-neutral-300 hover:text-white hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="copy" class="w-4 h-4"></i></button>
-              <button onclick="openEditModal('${opp.id}')" title="Edit Opportunity" class="text-brand-500 hover:text-brand-400 hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-              <button onclick="handleDelete('${opp.id}')" title="Delete Opportunity" class="text-red-500 hover:text-red-400 hover:bg-neutral-800 p-1.5 rounded transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-0.5 shrink-0">
+              <button onclick="openDuplicateModal('${opp.id}')" title="Duplicate" class="text-neutral-300 hover:text-white hover:bg-neutral-800 p-1 rounded transition-colors"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+              <button onclick="openEditModal('${opp.id}')" title="Edit" class="text-brand-500 hover:text-brand-400 hover:bg-neutral-800 p-1 rounded transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+              <button onclick="handleDelete('${opp.id}')" title="Delete" class="text-red-500 hover:text-red-400 hover:bg-neutral-800 p-1 rounded transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
             </div>
           ` : '';
 
           const currentNeed = opp.remainingNeed || 0;
           const needsColor = currentNeed > 0 ? 'text-brand-500' : 'text-neutral-500';
           const needControls = showAdminControls ? `
-            <div class="flex items-center gap-1 ml-auto">
-              <button onclick="updateNeed('${opp.id}', ${currentNeed}, -1)" class="w-6 h-6 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 transition-colors">-</button>
-              <button onclick="updateNeed('${opp.id}', ${currentNeed}, 1)" class="w-6 h-6 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 transition-colors">+</button>
+            <div class="flex items-center gap-1">
+              <button onclick="updateNeed('${opp.id}', ${currentNeed}, -1)" class="w-5 h-5 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 transition-colors">-</button>
+              <button onclick="updateNeed('${opp.id}', ${currentNeed}, 1)" class="w-5 h-5 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 transition-colors">+</button>
             </div>
           ` : '';
 
           const roleInterests = allInterests.filter(i => i.oppId === opp.id);
           const interestBtn = showAdminControls ? `
-            <button onclick="openViewInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}')" class="w-full mt-3 flex items-center justify-between bg-neutral-800 hover:bg-neutral-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition-colors border border-neutral-700">
-              <span class="flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5 text-brand-500"></i> Who's Interested?</span>
-              <span class="bg-brand-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold">${roleInterests.length}</span>
+            <button onclick="openViewInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}')" class="w-full mt-2 flex items-center justify-between bg-neutral-800 hover:bg-neutral-700 text-white px-2 py-1.5 rounded-lg text-[11px] font-semibold transition-colors border border-neutral-700">
+              <span class="flex items-center gap-1.5"><i data-lucide="users" class="w-3 h-3 text-brand-500"></i> Who's Interested?</span>
+              <span class="bg-brand-500 text-black px-1.5 py-0.5 rounded-full text-[9px] font-extrabold">${roleInterests.length}</span>
             </button>
           ` : `
-            <button onclick="openInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}', '${opp.createdBy || ''}')" class="w-full mt-3 flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-400 text-black px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm">
-              <i data-lucide="heart" class="w-4 h-4"></i>
+            <button onclick="openInterestModal('${opp.id}', '${opp.title.replace(/'/g, "\\'")}', '${opp.createdBy || ''}')" class="w-full mt-2 flex items-center justify-center gap-1.5 bg-brand-500 hover:bg-brand-400 text-black px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors shadow-sm">
+              <i data-lucide="heart" class="w-3 h-3"></i>
               <span>I'm Interested</span>
             </button>
           `;
 
           const hasContact = opp.contactName || opp.contactPhone || opp.contactEmail;
           const contactHtml = hasContact ? `
-            <h4 class="text-xs font-bold text-neutral-200 uppercase tracking-wider mb-2 mt-4 font-serif">Contact Person</h4>
-            <div class="bg-black/50 p-3 rounded-lg border border-neutral-800 space-y-2">
-              ${opp.contactName ? `<div class="flex items-center gap-2 text-xs text-neutral-300"><i data-lucide="user-check" class="w-4 h-4 text-brand-500"></i> ${opp.contactName}</div>` : ''}
-              ${opp.contactPhone ? `<div class="flex items-center gap-2 text-xs text-neutral-300"><i data-lucide="phone" class="w-4 h-4 text-brand-500"></i> <a href="tel:${opp.contactPhone}" class="hover:text-brand-400 transition-colors">${opp.contactPhone}</a></div>` : ''}
-              ${opp.contactEmail ? `<div class="flex items-center gap-2 text-xs text-neutral-300"><i data-lucide="mail" class="w-4 h-4 text-brand-500"></i> <a href="mailto:${opp.contactEmail}" class="hover:text-brand-400 transition-colors">${opp.contactEmail}</a></div>` : ''}
+            <h4 class="text-[10px] font-bold text-neutral-200 uppercase tracking-wider mb-1.5 mt-3 font-serif">Contact Person</h4>
+            <div class="bg-black/50 p-2 rounded-lg border border-neutral-800 space-y-1.5">
+              ${opp.contactName ? `<div class="flex items-center gap-2 text-[11px] text-neutral-300"><i data-lucide="user-check" class="w-3 h-3 text-brand-500"></i> ${opp.contactName}</div>` : ''}
+              ${opp.contactPhone ? `<div class="flex items-center gap-2 text-[11px] text-neutral-300"><i data-lucide="phone" class="w-3 h-3 text-brand-500"></i> <a href="tel:${opp.contactPhone}" class="hover:text-brand-400 transition-colors">${opp.contactPhone}</a></div>` : ''}
+              ${opp.contactEmail ? `<div class="flex items-center gap-2 text-[11px] text-neutral-300"><i data-lucide="mail" class="w-3 h-3 text-brand-500"></i> <a href="mailto:${opp.contactEmail}" class="hover:text-brand-400 transition-colors">${opp.contactEmail}</a></div>` : ''}
             </div>
           ` : '';
 
           const photoHtml = opp.photoData ? `
-            <div class="w-full h-48 relative border-b border-neutral-800 shrink-0 overflow-hidden">
+            <div class="w-full h-28 relative border-b border-neutral-800 shrink-0 overflow-hidden">
               <img src="${opp.photoData}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
             </div>
           ` : '';
 
           return `
-            <div class="bg-neutral-900 rounded-2xl shadow-sm border border-neutral-800 flex flex-col overflow-hidden card-hover relative group">
+            <div class="bg-neutral-900 rounded-xl shadow-sm border border-neutral-800 flex flex-col overflow-hidden card-hover relative group">
               ${photoHtml}
-              <div class="p-5 flex-grow">
-                <div class="flex justify-between items-start mb-3">
-                  <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-neutral-200 bg-neutral-800 border border-neutral-700">
+              <div class="p-3 flex-grow flex flex-col">
+                <div class="flex justify-between items-start gap-1 mb-2">
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider text-neutral-200 bg-neutral-800 border border-neutral-700">
                       ${opp.ministryName || 'Ministry'}
                     </span>
-                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-neutral-200 bg-neutral-800 border border-neutral-700">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider text-neutral-200 bg-neutral-800 border border-neutral-700">
                       ${opp.benchmarkName || 'Classification'}
                     </span>
                   </div>
                   ${adminControls}
                 </div>
                 
-                <h3 class="text-lg font-bold text-white leading-tight mb-2 font-serif">${opp.title}</h3>
-                <p class="text-sm text-neutral-400 mb-4 line-clamp-2" title="${opp.summary}">${opp.summary}</p>
+                <h3 class="text-base font-bold text-white leading-tight mb-1 font-serif">${opp.title}</h3>
+                <p class="text-xs text-neutral-400 mb-3 line-clamp-2 flex-grow" title="${opp.summary}">${opp.summary}</p>
                 
-                <div class="space-y-2 mb-4 bg-neutral-800/50 p-3 rounded-xl border border-neutral-700/50">
-                  <div class="flex items-start gap-2 text-xs text-neutral-300">
-                    <i data-lucide="clock" class="w-4 h-4 text-neutral-500 shrink-0"></i>
-                    <span>${opp.scheduleText}</span>
-                  </div>
-                  <div class="flex items-start gap-2 text-xs text-neutral-300">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-neutral-500 shrink-0"></i>
-                    <span>${opp.location}</span>
-                  </div>
-                  <div class="flex items-start gap-2 text-xs text-neutral-300">
-                    <i data-lucide="user" class="w-4 h-4 text-neutral-500 shrink-0"></i>
-                    <span>${opp.supervisor}</span>
-                  </div>
-                  <div class="pt-2 mt-2 border-t border-neutral-700/50 flex items-center gap-2 text-xs font-bold ${needsColor} w-full">
-                    <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+                <div class="bg-neutral-800/50 p-2.5 rounded-lg border border-neutral-700/50 flex items-center justify-between gap-1.5 text-[11px] font-bold ${needsColor} w-full">
+                  <div class="flex items-center gap-1.5">
+                    <i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i>
                     <span>Remaining Need: ${currentNeed}</span>
-                    ${needControls}
                   </div>
+                  ${needControls}
                 </div>
-                ${giftTags ? `<div class="flex flex-wrap gap-1.5 mb-2">${giftTags}</div>` : ''}
-
-                ${interestBtn}
               </div>
               
-              <div class="bg-black/50 px-5 py-3 border-t border-neutral-800">
-                <button onclick="toggleDetails('${opp.id}')" class="w-full flex justify-between items-center text-sm font-semibold text-brand-500 hover:text-brand-400 transition-colors">
+              <div class="bg-black/50 px-3 py-2 border-t border-neutral-800">
+                <button onclick="toggleDetails('${opp.id}')" class="w-full flex justify-between items-center text-[11px] font-semibold text-brand-500 hover:text-brand-400 transition-colors">
                   <span>View Details</span>
-                  <i data-lucide="chevron-down" id="icon-${opp.id}" class="w-4 h-4 transition-transform"></i>
+                  <i data-lucide="chevron-down" id="icon-${opp.id}" class="w-3.5 h-3.5 transition-transform"></i>
                 </button>
                 <div id="details-${opp.id}" class="hidden mt-3 pt-3 border-t border-neutral-800">
-                  <h4 class="text-xs font-bold text-neutral-200 uppercase tracking-wider mb-2 font-serif">Key Responsibilities</h4>
-                  <ul class="mb-3">${dutiesHtml}</ul>
+                  
+                  <div class="space-y-1.5 mb-3 bg-neutral-800/50 p-2.5 rounded-lg border border-neutral-700/50">
+                    <div class="flex items-start gap-2 text-[11px] text-neutral-300">
+                      <i data-lucide="clock" class="w-3.5 h-3.5 text-neutral-500 shrink-0"></i>
+                      <span>${opp.scheduleText}</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-[11px] text-neutral-300">
+                      <i data-lucide="map-pin" class="w-3.5 h-3.5 text-neutral-500 shrink-0"></i>
+                      <span>${opp.location}</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-[11px] text-neutral-300">
+                      <i data-lucide="user" class="w-3.5 h-3.5 text-neutral-500 shrink-0"></i>
+                      <span>${opp.supervisor}</span>
+                    </div>
+                  </div>
+
+                  ${giftTags ? `<div class="flex flex-wrap gap-1 mb-3">${giftTags}</div>` : ''}
+
+                  <h4 class="text-[10px] font-bold text-neutral-200 uppercase tracking-wider mb-1.5 font-serif">Key Responsibilities</h4>
+                  <ul class="mb-2">${dutiesHtml}</ul>
                   
                   ${opp.prerequisites && opp.prerequisites.length > 0 ? `
-                    <h4 class="text-xs font-bold text-neutral-200 uppercase tracking-wider mb-2 font-serif">Prerequisites</h4>
-                    <div class="flex flex-wrap gap-1.5">
-                      ${opp.prerequisites.map(p => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-brand-900/20 text-brand-500 border border-brand-800/30"><i data-lucide="shield-alert" class="w-3 h-3"></i> ${p}</span>`).join('')}
+                    <h4 class="text-[10px] font-bold text-neutral-200 uppercase tracking-wider mb-1.5 mt-3 font-serif">Prerequisites</h4>
+                    <div class="flex flex-wrap gap-1">
+                      ${opp.prerequisites.map(p => `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-brand-900/20 text-brand-500 border border-brand-800/30"><i data-lucide="shield-alert" class="w-2.5 h-2.5"></i> ${p}</span>`).join('')}
                     </div>
                   ` : ''}
                   
                   ${contactHtml}
+
+                  <div class="mt-3 pt-3 border-t border-neutral-800">
+                    ${interestBtn}
+                  </div>
                 </div>
               </div>
             </div>
           `;
         }).join('');
       }
+
+      const paginationEl = document.getElementById('paginationControls');
+      paginationEl.innerHTML = `
+        <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled class="opacity-30 cursor-not-allowed flex items-center gap-1 text-xs font-bold text-white bg-neutral-800 border border-neutral-700 px-3 py-2 rounded-lg"' : 'class="flex items-center gap-1 text-xs font-bold text-black bg-brand-500 hover:bg-brand-400 px-3 py-2 rounded-lg transition-colors"'}>
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev
+        </button>
+        <span class="text-xs text-neutral-400 font-bold uppercase tracking-wider">Page ${currentPage} of ${totalPages}</span>
+        <button onclick="changePage(1)" ${currentPage === totalPages || totalPages === 0 ? 'disabled class="opacity-30 cursor-not-allowed flex items-center gap-1 text-xs font-bold text-white bg-neutral-800 border border-neutral-700 px-3 py-2 rounded-lg"' : 'class="flex items-center gap-1 text-xs font-bold text-black bg-brand-500 hover:bg-brand-400 px-3 py-2 rounded-lg transition-colors"'}>
+          Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      `;
+
       if (window.lucide) window.lucide.createIcons();
     };
 
